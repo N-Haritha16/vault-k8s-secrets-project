@@ -15,7 +15,7 @@ Demo project for managing Kubernetes application secrets with HashiCorp Vault an
 1. Clone the repo:
 
    ```bash
-   git clone https://github.com/<your-username>/vault-k8s-secrets-project.git
+   git clone https://github.com/N-Haritha16/vault-k8s-secrets-project.git
    cd vault-k8s-secrets-project
 
 2. Copy the example env file if needed:
@@ -30,7 +30,7 @@ docker compose up -d --build
 
 - This will start:
 
-a. k3s – local Kubernetes cluster.
+a. k3s – local Kubernetes(k8s) cluster.
 
 b. app – sample Node.js app on port 3000.
 
@@ -40,6 +40,7 @@ c. tests – container that runs basic checks and then exits.
 
 bash
 docker compose ps
+
 You should see k3s and app as healthy containers.
 
 5. Point kubectl at the local k3s cluster:

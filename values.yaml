@@ -1,0 +1,21 @@
+global:
+  enabled: true
+
+server:
+  enabled: true
+  ha:
+    enabled: false
+
+  dev:
+    enabled: true
+
+  dataStorage:
+    enabled: false
+
+  service:
+    enabled: true
+    type: ClusterIP
+    port: 8200
+
+injector:
+  enabled: true

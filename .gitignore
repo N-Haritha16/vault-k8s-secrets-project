@@ -1,0 +1,25 @@
+# Node / app
+node_modules/
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+
+# Env and secrets
+.env
+root_token.txt
+unseal_keys.txt
+keys.json
+
+# Kubernetes / kubeconfig
+kubeconfig/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Misc
+logs/
+*.log

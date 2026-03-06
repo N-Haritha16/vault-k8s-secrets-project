@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  k3s:
+    image: rancher/k3s:v1.30.0-k3s1
+    privileged: true
+    command: server
+    environment:
+      K3S_KUBECONFIG_OUTPUT: "/output/kubeconfig"
+      K3S_KUBECONFIG_MODE: "644"
+    volumes:
+      - ./kubeconfig:/output
+      - ./helm/vault:/helm/vault
+      - ./vault:/vault-config
+    # simple healthcheck: k3s server process is running
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -q '[k]3s server'"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+
+  app:
+    build:
+      context: ./app/node
+    ports:
+      - "3000:3000"
+    environment:
+      APP_PORT: 3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+
+  tests:
+    image: alpine:3.19
+    depends_on:
+      app:
+        condition: service_healthy
+    volumes:
+      - ./tests:/tests
+      - ./kubeconfig:/root/.kube
+    working_dir: /tests
+    # if you have tests, keep this:
+    command: ["/bin/sh", "run-all-tests.sh"]
+    # if not ready yet, temporarily use:
+    # command: ["sh", "-c", "echo 'Tests placeholder – see README'; sleep 5"]

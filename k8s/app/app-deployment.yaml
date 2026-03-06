@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-app
+  template:
+    metadata:
+      labels:
+        app: sample-app
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "app-db-user"
+        vault.hashicorp.com/agent-inject-secret-db-creds.txt: "database/creds/app-role"
+        vault.hashicorp.com/agent-inject-template-db-creds.txt: |
+          {{- with secret "database/creds/app-role" -}}
+          username={{ .Data.username }}
+          password={{ .Data.password }}
+          {{- end -}}
+        vault.hashicorp.com/agent-inject-secret-kv-config.txt: "secret/data/app/config"
+        vault.hashicorp.com/agent-inject-template-kv-config.txt: |
+          {{- with secret "secret/data/app/config" -}}
+          api_key={{ .Data.data.api_key }}
+          value={{ .Data.data.value }}
+          {{- end -}}
+    spec:
+      serviceAccountName: app-db-user-sa
+      containers:
+        - name: app
+          image: sample-app-node:latest
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: vault-secrets
+              mountPath: /vault/secrets
+      volumes:
+        - name: vault-secrets
+          emptyDir:
+            medium: "Memory"

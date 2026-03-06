@@ -1,0 +1,4 @@
+[project]
+name = "vault-sample-python"
+version = "1.0.0"
+dependencies = ["fastapi", "uvicorn"]
